@@ -102,7 +102,7 @@ where
 {
     type Output = Result<Matrix<T>, &'static str>;
 
-    fn add(self, other: Matrix<T>) -> Self::Output {
+    fn add(self, other: Self) -> Self::Output {
         if self.rows != other.rows || self.cols != other.cols {
             return Err("Dimensions must be the same");
         }
@@ -124,7 +124,7 @@ where
 {
     type Output = Result<Matrix<T>, &'static str>;
 
-    fn mul(self, other: Matrix<T>) -> Self::Output {
+    fn mul(self, other: Self) -> Self::Output {
         if self.cols != other.rows {
             return Err("Inner dimensions must be same");
         }

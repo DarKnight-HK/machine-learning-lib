@@ -6,7 +6,7 @@ pub struct NN {
     pub count: usize,
     pub weights: Vec<Matrix>,
     pub biases: Vec<Matrix>,
-    pub activations: Vec<Matrix>,
+    pub parameters: Vec<Matrix>,
 }
 
 impl NN {
@@ -15,22 +15,22 @@ impl NN {
             count: architecture.len() - 1,
             weights: vec![],
             biases: vec![],
-            activations: vec![],
+            parameters: vec![],
         };
-        nn.activations.push(Matrix::new(1, architecture[0]));
+        nn.parameters.push(Matrix::new(1, architecture[0]));
         for i in 1..architecture.len() {
             nn.weights
-                .push(Matrix::new(nn.activations[i - 1].cols, architecture[i]));
+                .push(Matrix::new(nn.parameters[i - 1].cols, architecture[i]));
 
             nn.biases.push(Matrix::new(1, architecture[i]));
 
-            nn.activations.push(Matrix::new(1, architecture[i]));
+            nn.parameters.push(Matrix::new(1, architecture[i]));
         }
         nn
     }
     pub fn print(&self) {
         for i in 0..self.count {
-            self.activations[i].print(&format!("activation[{}]", i));
+            self.parameters[i].print(&format!("activation[{}]", i));
             self.weights[i].print(&format!("weight[{}]", i));
             self.biases[i].print(&format!("bias[{}]", i));
         }
@@ -45,9 +45,9 @@ impl NN {
 
     pub fn forward(&mut self) {
         for i in 0..self.count {
-            self.activations[i + 1] =
-                (&(&self.activations[i] * &self.weights[i]).unwrap() + &self.biases[i]).unwrap();
-            self.activations[i + 1].sigmoid();
+            self.parameters[i + 1] =
+                (&(&self.parameters[i] * &self.weights[i]).unwrap() + &self.biases[i]).unwrap();
+            self.parameters[i + 1].sigmoid();
         }
     }
 
@@ -57,10 +57,10 @@ impl NN {
         }
         let mut cost = 0.0;
         for i in 0..features.rows {
-            self.activations[0].data[0] = features.data[i].clone();
+            self.parameters[0].data[0] = features.data[i].clone();
             self.forward();
             for j in 0..labels.cols {
-                let diff = self.activations[self.count].data[0][j] - labels.data[i][j];
+                let diff = self.parameters[self.count].data[0][j] - labels.data[i][j];
                 cost += diff * diff;
             }
         }

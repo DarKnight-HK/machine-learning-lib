@@ -29,10 +29,10 @@ fn main() {
 
     for i in 0..2 {
         for j in 0..2 {
-            nn.activations[0].data[0][0] = i as f64;
-            nn.activations[0].data[0][1] = j as f64;
+            nn.parameters[0].data[0][0] = i as f64;
+            nn.parameters[0].data[0][1] = j as f64;
             nn.forward();
-            println!("Prediction: {:?}", nn.activations[nn.count].data[0][0])
+            println!("Prediction: {:?}", nn.parameters[nn.count].data[0][0])
         }
     }
 }

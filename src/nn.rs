@@ -60,7 +60,7 @@ impl NN {
             self.activations[0].data[0] = features.data[i].clone();
             self.forward();
             for j in 0..labels.cols {
-                let diff = self.activations[self.count].data[0][j] - labels.data[0][j];
+                let diff = self.activations[self.count].data[0][j] - labels.data[i][j];
                 cost += diff * diff;
             }
         }

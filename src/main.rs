@@ -20,18 +20,19 @@ fn main() {
     grad.randomize(0.0, 1.0);
     let cost = nn.cost(&xor_inputs, &xor_outputs).unwrap();
     println!("Cost = {cost}");
-    nn.finite_diff(&mut grad, 1e-3, &xor_inputs, &xor_outputs);
-    nn.learn(&mut grad, 1e-3);
+    for _ in 0..1000000 {
+        nn.finite_diff(&mut grad, 1e-1, &xor_inputs, &xor_outputs);
+        nn.learn(&mut grad, 1e-1);
+    }
     let cost = nn.cost(&xor_inputs, &xor_outputs).unwrap();
     println!("Cost = {cost}");
 
-    // for i in 0..2 {
-    //     for j in 0..2 {
-    //         nn.activations[0].data[0] = xor_inputs[i].clone();
-    //         nn.forward();
-    //         print!("{i} ^ {j} ");
-    //         nn.activations[nn.count].print("Output");
-    //         println!()
-    //     }
-    // }
+    for i in 0..2 {
+        for j in 0..2 {
+            nn.activations[0].data[0][0] = i as f64;
+            nn.activations[0].data[0][1] = j as f64;
+            nn.forward();
+            println!("Prediction: {:?}", nn.activations[nn.count].data[0][0])
+        }
+    }
 }

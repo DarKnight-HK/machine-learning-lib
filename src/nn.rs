@@ -1,56 +1,19 @@
-use num::ToPrimitive;
-use rand::prelude::Distribution;
-use rand::{distributions::Standard, Rng};
-use std::fmt::Display;
-use std::ops::{Add, AddAssign, Mul, Neg};
-
-pub trait MatrixOps:
-    Add<Output = Self>
-    + Copy
-    + Default
-    + Display
-    + PartialOrd
-    + Mul<Output = Self>
-    + AddAssign
-    + ToPrimitive
-    + From<f64>
-    + Neg<Output = Self>
-{
-}
+use rand::Rng;
+use std::ops::{Add, Mul};
 
 #[derive(Debug, Clone)]
-pub struct Matrix<T> {
+pub struct Matrix {
     pub rows: usize,
     pub cols: usize,
-    pub data: Vec<Vec<T>>,
+    pub data: Vec<Vec<f64>>,
 }
 
-impl<T> MatrixOps for T
-where
-    T: Add<Output = T>
-        + AddAssign
-        + Copy
-        + Default
-        + Display
-        + From<f64>
-        + rand::distributions::uniform::SampleUniform
-        + PartialOrd
-        + ToPrimitive
-        + Neg<Output = T>
-        + Mul<Output = T>,
-    Standard: Distribution<T>,
-{
-}
-
-impl<T> Matrix<T>
-where
-    T: MatrixOps + rand::distributions::uniform::SampleUniform,
-{
+impl Matrix {
     pub fn new(rows: usize, cols: usize) -> Self {
         Self {
             rows,
             cols,
-            data: vec![vec![T::default(); cols]; rows],
+            data: vec![vec![0.0; cols]; rows],
         }
     }
 
@@ -65,7 +28,7 @@ where
         println!("]");
     }
 
-    pub fn fill(&mut self, value: T) {
+    pub fn fill(&mut self, value: f64) {
         for row in self.data.iter_mut() {
             for mat_value in row.iter_mut() {
                 *mat_value = value;
@@ -73,7 +36,7 @@ where
         }
     }
 
-    pub fn fill_rand(&mut self, mut low: T, mut high: T) {
+    pub fn fill_rand(&mut self, mut low: f64, mut high: f64) {
         if low > high {
             std::mem::swap(&mut low, &mut high);
         }
@@ -88,19 +51,16 @@ where
     pub fn sigmoid(&mut self) {
         for i in 0..self.rows {
             for j in 0..self.cols {
-                let value = self.data[i][j].to_f64().unwrap();
+                let value = self.data[i][j];
                 let sigmoid_value = 1.0 / (1.0 + (-value).exp());
-                self.data[i][j] = T::from(sigmoid_value);
+                self.data[i][j] = sigmoid_value;
             }
         }
     }
 }
 
-impl<T> Add for Matrix<T>
-where
-    T: MatrixOps + rand::distributions::uniform::SampleUniform,
-{
-    type Output = Result<Matrix<T>, &'static str>;
+impl<'a> Add<&'a Matrix> for &'a Matrix {
+    type Output = Result<Matrix, &'static str>;
 
     fn add(self, other: Self) -> Self::Output {
         if self.rows != other.rows || self.cols != other.cols {
@@ -118,11 +78,8 @@ where
     }
 }
 
-impl<T> Mul for Matrix<T>
-where
-    T: MatrixOps + rand::distributions::uniform::SampleUniform,
-{
-    type Output = Result<Matrix<T>, &'static str>;
+impl<'a> Mul<&'a Matrix> for &'a Matrix {
+    type Output = Result<Matrix, &'static str>;
 
     fn mul(self, other: Self) -> Self::Output {
         if self.cols != other.rows {
@@ -132,7 +89,7 @@ where
         let mut new_mat = Matrix::new(self.rows, other.cols);
         for i in 0..self.rows {
             for j in 0..other.cols {
-                new_mat.data[i][j] = T::default();
+                new_mat.data[i][j] = 0.0;
                 for k in 0..self.cols {
                     new_mat.data[i][j] += self.data[i][k] * other.data[k][j];
                 }

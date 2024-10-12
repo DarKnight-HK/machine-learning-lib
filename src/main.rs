@@ -1,32 +1,36 @@
 use machine_learning::nn::Matrix;
 
 struct Xor {
-    a0: Matrix<f64>,
-    w1: Matrix<f64>,
-    w2: Matrix<f64>,
-    b1: Matrix<f64>,
-    b2: Matrix<f64>,
-    a1: Matrix<f64>,
-    a2: Matrix<f64>,
+    a0: Matrix,
+    w1: Matrix,
+    w2: Matrix,
+    b1: Matrix,
+    b2: Matrix,
+    a1: Matrix,
+    a2: Matrix,
+}
+
+fn xor_cost(xor: &mut Xor, input: Matrix, output: Matrix) -> f64 {
+    todo!()
 }
 
 fn forward_xor(xor: &mut Xor, x1: f64, x2: f64) -> f64 {
     xor.a0.data[0] = vec![x1, x2];
-    xor.a1 = ((xor.a0.clone() * xor.w1.clone()).unwrap() + xor.b1.clone()).unwrap();
+    xor.a1 = (&(&xor.a0 * &xor.w1).unwrap() + &xor.b1).unwrap();
     xor.a1.sigmoid();
-    xor.a2 = ((xor.a1.clone() * xor.w2.clone()).unwrap() + xor.b2.clone()).unwrap();
+    xor.a2 = (&(&xor.a1 * &xor.w2).unwrap() + &xor.b2).unwrap();
     xor.a2.sigmoid();
     xor.a2.data[0][0]
 }
 
 fn main() {
-    let a0: Matrix<f64> = Matrix::new(1, 2);
-    let w1: Matrix<f64> = Matrix::new(2, 2);
-    let w2: Matrix<f64> = Matrix::new(2, 1);
-    let b1: Matrix<f64> = Matrix::new(1, 2);
-    let b2: Matrix<f64> = Matrix::new(1, 1);
-    let a1: Matrix<f64> = Matrix::new(1, 2);
-    let a2: Matrix<f64> = Matrix::new(1, 1);
+    let a0: Matrix = Matrix::new(1, 2);
+    let w1: Matrix = Matrix::new(2, 2);
+    let w2: Matrix = Matrix::new(2, 1);
+    let b1: Matrix = Matrix::new(1, 2);
+    let b2: Matrix = Matrix::new(1, 1);
+    let a1: Matrix = Matrix::new(1, 2);
+    let a2: Matrix = Matrix::new(1, 1);
 
     let mut xor = Xor {
         a0,

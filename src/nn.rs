@@ -30,6 +30,7 @@ impl NN {
     }
     pub fn print(&self) {
         for i in 0..self.count {
+            self.activations[i].print(&format!("activation[{}]", i));
             self.weights[i].print(&format!("weight[{}]", i));
             self.biases[i].print(&format!("bias[{}]", i));
         }
@@ -42,5 +43,28 @@ impl NN {
         }
     }
 
-    pub fn forward(&mut self) {}
+    pub fn forward(&mut self) {
+        for i in 0..self.count {
+            self.activations[i + 1] =
+                (&(&self.activations[i] * &self.weights[i]).unwrap() + &self.biases[i]).unwrap();
+            self.activations[i + 1].sigmoid();
+        }
+    }
+
+    pub fn cost(&mut self, features: &Matrix, labels: &Matrix) -> Result<f64, &'static str> {
+        if features.rows != labels.rows {
+            return Err("Rows should be same");
+        }
+        let mut cost = 0.0;
+        for i in 0..features.rows {
+            self.activations[0].data[0] = features.data[i].clone();
+            self.forward();
+            for j in 0..labels.cols {
+                let diff = self.activations[self.count].data[0][j] - labels.data[0][j];
+                cost += diff * diff;
+            }
+        }
+
+        Ok(cost / features.rows as f64)
+    }
 }

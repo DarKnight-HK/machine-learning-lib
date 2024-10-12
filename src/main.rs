@@ -16,8 +16,11 @@ fn main() {
     let arch: [usize; 3] = [2, 2, 1];
     let mut nn = NN::new(&arch);
     nn.randomize(0.0, 1.0);
+    let mut grad = NN::new(&arch);
+    grad.randomize(0.0, 1.0);
     let cost = nn.cost(&xor_inputs, &xor_outputs).unwrap();
-    println!("Cost = {cost}")
+    println!("Cost = {cost}");
+    nn.finite_diff(&mut grad, 1e-3, &xor_inputs, &xor_outputs);
 
     // for i in 0..2 {
     //     for j in 0..2 {

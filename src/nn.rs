@@ -67,4 +67,51 @@ impl NN {
 
         Ok(cost / features.rows as f64)
     }
+
+    pub fn finite_diff(
+        &mut self,
+        gradient: &mut NN,
+        epsilon: f64,
+        features: &Matrix,
+        labels: &Matrix,
+    ) {
+        let mut saved = 0.0;
+        let c = self.cost(features, labels).unwrap();
+
+        for i in 0..self.count {
+            for j in 0..self.weights[i].rows {
+                for k in 0..self.weights[i].cols {
+                    saved = self.weights[i].data[j][k];
+                    self.weights[i].data[j][k] += epsilon;
+                    gradient.weights[i].data[j][k] =
+                        (self.cost(features, labels).unwrap() - c) / epsilon;
+                    self.weights[i].data[j][k] = saved;
+                }
+            }
+            for j in 0..self.biases[i].rows {
+                for k in 0..self.biases[i].cols {
+                    saved = self.biases[i].data[j][k];
+                    self.biases[i].data[j][k] += epsilon;
+                    gradient.biases[i].data[j][k] =
+                        (self.cost(features, labels).unwrap() - c) / epsilon;
+                    self.biases[i].data[j][k] = saved;
+                }
+            }
+        }
+    }
+
+    pub fn learn(&mut self, gradient: &mut NN, learning_rate: f64) {
+        for i in 0..self.count {
+            for j in 0..self.weights[i].rows {
+                for k in 0..self.weights[i].cols {
+                    self.weights[i].data[j][k] -= learning_rate * gradient.weights[i].data[j][k];
+                }
+            }
+            for j in 0..self.biases[i].rows {
+                for k in 0..self.biases[i].cols {
+                    self.biases[i].data[j][k] -= learning_rate * gradient.biases[i].data[j][k];
+                }
+            }
+        }
+    }
 }

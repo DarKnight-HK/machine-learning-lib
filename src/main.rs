@@ -21,6 +21,9 @@ fn main() {
     let cost = nn.cost(&xor_inputs, &xor_outputs).unwrap();
     println!("Cost = {cost}");
     nn.finite_diff(&mut grad, 1e-3, &xor_inputs, &xor_outputs);
+    nn.learn(&mut grad, 1e-3);
+    let cost = nn.cost(&xor_inputs, &xor_outputs).unwrap();
+    println!("Cost = {cost}");
 
     // for i in 0..2 {
     //     for j in 0..2 {

@@ -1,14 +1,24 @@
+use num::ToPrimitive;
 use rand::prelude::Distribution;
 use rand::{distributions::Standard, Rng};
 use std::fmt::Display;
-use std::ops::{Add, AddAssign, Mul};
+use std::ops::{Add, AddAssign, Mul, Neg};
 
 pub trait MatrixOps:
-    Add<Output = Self> + Copy + Default + Display + PartialOrd + Mul<Output = Self> + AddAssign
+    Add<Output = Self>
+    + Copy
+    + Default
+    + Display
+    + PartialOrd
+    + Mul<Output = Self>
+    + AddAssign
+    + ToPrimitive
+    + From<f64>
+    + Neg<Output = Self>
 {
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matrix<T> {
     pub rows: usize,
     pub cols: usize,
@@ -22,8 +32,11 @@ where
         + Copy
         + Default
         + Display
+        + From<f64>
         + rand::distributions::uniform::SampleUniform
         + PartialOrd
+        + ToPrimitive
+        + Neg<Output = T>
         + Mul<Output = T>,
     Standard: Distribution<T>,
 {
@@ -68,6 +81,16 @@ where
         for row in self.data.iter_mut() {
             for value in row.iter_mut() {
                 *value = rng.gen_range(low..high);
+            }
+        }
+    }
+
+    pub fn sigmoid(&mut self) {
+        for i in 0..self.rows {
+            for j in 0..self.cols {
+                let value = self.data[i][j].to_f64().unwrap();
+                let sigmoid_value = 1.0 / (1.0 + (-value).exp());
+                self.data[i][j] = T::from(sigmoid_value);
             }
         }
     }

@@ -41,15 +41,15 @@ where
         }
     }
 
-    pub fn multiply(&self, mat2: &Matrix<T>) -> Matrix<T> {
-        todo!()
-    }
-
-    pub fn print(&self) {
-        for row in self.data.iter().flatten() {
-            print!("{row} ")
+    pub fn print(&self, name: &str) {
+        println!("{} = [", name);
+        for row in self.data.iter() {
+            for value in row.iter() {
+                print!("    {:.2} ", value);
+            }
+            println!();
         }
-        println!()
+        println!("]");
     }
 
     pub fn fill(&mut self, value: T) {

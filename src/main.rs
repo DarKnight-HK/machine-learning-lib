@@ -1,9 +1,11 @@
 use machine_learning::nn::Matrix;
 fn main() {
-    let mut matrix1: Matrix<f32> = Matrix::new(4, 2);
-    let mut matrix2: Matrix<f32> = Matrix::new(2, 4);
-    matrix1.fill(1.0);
-    matrix2.fill(2.01);
-    let mat3 = matrix1 * matrix2;
-    mat3.unwrap().print();
+    let mut w1: Matrix<f64> = Matrix::new(2, 2);
+    let mut w2: Matrix<f64> = Matrix::new(2, 1);
+    let mut b1: Matrix<f64> = Matrix::new(1, 2);
+    let mut b2: Matrix<f64> = Matrix::new(1, 1);
+    w1.fill_rand(0.0, 1.0);
+    w2.fill_rand(0.0, 1.0);
+    b1.fill_rand(0.0, 1.0);
+    b2.fill_rand(0.0, 1.0);
 }

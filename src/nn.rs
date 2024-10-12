@@ -28,4 +28,19 @@ impl NN {
         }
         nn
     }
+    pub fn print(&self) {
+        for i in 0..self.count {
+            self.weights[i].print(&format!("weight[{}]", i));
+            self.biases[i].print(&format!("bias[{}]", i));
+        }
+    }
+
+    pub fn randomize(&mut self, low: f64, high: f64) {
+        for i in 0..self.count {
+            self.weights[i].fill_rand(low, high);
+            self.biases[i].fill_rand(low, high);
+        }
+    }
+
+    pub fn forward(&mut self) {}
 }

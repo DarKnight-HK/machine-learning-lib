@@ -21,7 +21,7 @@ impl Matrix {
         println!("{} = [", name);
         for row in self.data.iter() {
             for value in row.iter() {
-                print!("    {:.2} ", value);
+                print!("    {:.5} ", value);
             }
             println!();
         }
